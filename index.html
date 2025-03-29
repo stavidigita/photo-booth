@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עמדת צילום עצמי</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 3px solid #3498db;
+        }
+        #video, #canvas {
+            width: 100%;
+            height: auto;
+            background-color: #000;
+        }
+        #canvas {
+            display: none;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            display: none;
+        }
+        .flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .error-message {
+            color: #e74c3c;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-radius: 5px;
+            display: none;
+        }
+        .success-message {
+            color: #27ae60;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #d5f5e3;
+            border-radius: 5px;
+            display: none;
+        }
+        .email-form {
+            margin-top: 20px;
+            display: none;
+        }
+        input[type="email"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .image-preview {
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .image-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>עמדת צילום עצמי</h1>
+        
+        <div class="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div class="countdown" id="countdown"></div>
+            <div class="flash" id="flash"></div>
+        </div>
+        
+        <div class="error-message" id="error-message">
+            לא ניתן לגשת למצלמה. אנא ודא שהמצלמה מחוברת ושאתה מאפשר גישה.
+        </div>
+        
+        <div class="controls">
+            <button id="capture-btn">צלם תמונה</button>
+            <button id="retry-btn" style="display: none;">נסה שוב</button>
+            <button id="new-photo-btn" style="display: none;">צלם שוב</button>
+            <button id="download-btn" style="display: none;">הורד תמונה</button>
+            <button id="email-btn" style="display: none;">שלח במייל</button>
+        </div>
+        
+        <div class="image-preview" id="image-preview">
+            <h3>התמונה שלך:</h3>
+            <img id="photo" src="" alt="תמונה שצולמה">
+        </div>
+        
+        <div class="email-form" id="email-form">
+            <input type="email" id="email-input" placeholder="הכנס כתובת מייל">
+            <button id="send-email-btn">שלח</button>
+        </div>
+        
+        <div class="success-message" id="success-message"></div>
+        
+        <div class="footer">
+            <p>הערות:</p>
+            <p>* יש לוודא שהדפדפן מאפשר גישה למצלמה</p>
+            <p>* פונקציית שליחת המייל היא להדגמה בלבד - היא לא שולחת מייל אמיתי</p>
+            <p>* התמונות נשמרות רק במכשיר שלך ולא נשלחות לשום מקום אחר</p>
+        </div>
+    </div>
+    <!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עמדת צילום עצמי</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 3px solid #3498db;
+        }
+        #video, #canvas {
+            width: 100%;
+            height: auto;
+            background-color: #000;
+        }
+        #canvas {
+            display: none;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            display: none;
+        }
+        .flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .error-message {
+            color: #e74c3c;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-radius: 5px;
+            display: none;
+        }
+        .success-message {
+            color: #27ae60;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #d5f5e3;
+            border-radius: 5px;
+            display: none;
+        }
+        .email-form {
+            margin-top: 20px;
+            display: none;
+        }
+        input[type="email"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .image-preview {
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .image-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>עמדת צילום עצמי</h1>
+        
+        <div class="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div class="countdown" id="countdown"></div>
+            <div class="flash" id="flash"></div>
+        </div>
+        
+        <div class="error-message" id="error-message">
+            לא ניתן לגשת למצלמה. אנא ודא שהמצלמה מחוברת ושאתה מאפשר גישה.
+        </div>
+        
+        <div class="controls">
+            <button id="capture-btn">צלם תמונה</button>
+            <button id="retry-btn" style="display: none;">נסה שוב</button>
+            <button id="new-photo-btn" style="display: none;">צלם שוב</button>
+            <button id="download-btn" style="display: none;">הורד תמונה</button>
+            <button id="email-btn" style="display: none;">שלח במייל</button>
+        </div>
+        
+        <div class="image-preview" id="image-preview">
+            <h3>התמונה שלך:</h3>
+            <img id="photo" src="" alt="תמונה שצולמה">
+        </div>
+        
+        <div class="email-form" id="email-form">
+            <input type="email" id="email-input" placeholder="הכנס כתובת מייל">
+            <button id="send-email-btn">שלח</button>
+        </div>
+        
+        <div class="success-message" id="success-message"></div>
+        
+        <div class="footer">
+            <p>הערות:</p>
+            <p>* יש לוודא שהדפדפן מאפשר גישה למצלמה</p>
+            <p>* פונקציית שליחת המייל היא להדגמה בלבד - היא לא שולחת מייל אמיתי</p>
+            <p>* התמונות נשמרות רק במכשיר שלך ולא נשלחות לשום מקום אחר</p>
+        </div>
+    </div>
